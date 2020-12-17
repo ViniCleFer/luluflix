@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {
+  View,
   Button,
   KeyboardAvoidingView,
   Alert,
@@ -15,51 +16,73 @@ import logo from './assets/lulu.png';
 
 const App = () => {
   const [playing, setPlaying] = useState(false);
+  const [icon, setIcon] = useState(false);
   const [btnVisible, setBtnVisible] = useState(false);
 
   const onStateChange = useCallback((state) => {
-    if (state === 'ended') {
-      setPlaying(false);
-      setBtnVisible(true);
+    if (state === 'playing') {
+      setIcon(true);
     }
-  }, []);
-
-  const togglePlaying = useCallback(() => {
-    setPlaying((prev) => !prev);
+    if (state === 'paused') {
+      setBtnVisible(true);
+      setIcon(false);
+    }
+    if (state === 'ended') {
+      setBtnVisible(true);
+      setIcon(false);
+    }
   }, []);
 
   useEffect(() => {
     setPlaying((prev) => !prev);
   }, []);
 
+  const togglePlaying = useCallback(() => {
+    setPlaying((prev) => !prev);
+  }, []);
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fc0fc0',
-      paddingTop: '60%',
+      // backgroundColor: '#fc0fc0',
+      backgroundColor: 'rgba(255,155,183, 0.99)',
+      paddingTop: '20%',
+    },
+    logoContainer: {
+      width: 240,
+      height: 68,
+      alignSelf: 'center',
+      marginBottom: 50,
+    },
+    logo: {
+      width: '100%',
+      height: '100%',
     },
     video: {
       flex: 1,
     },
     btn: {
       alignSelf: 'center',
+      marginTop: -50,
     },
   });
 
   return (
     <KeyboardAvoidingView style={styles.container}>
       <StatusBar backgroundColor="transparent" barStyle="light-content" />
+      <View style={styles.logoContainer}>
+        <Image style={styles.logo} source={logo} onPress={togglePlaying} />
+      </View>
       <YoutubePlayer
         height={300}
         play={playing}
-        videoId={'iee2TATGMyI'}
+        videoId={'jfgHwRKFdG8'}
         onChangeState={onStateChange}
         style={styles.video}
       />
       {btnVisible && (
-        // <Image style={styles.btn} source={btn} onPress={togglePlaying} />
         <Icon
-          name="play-circle-outline"
+          name={icon ? 'pause-circle-outline' : 'play-circle-outline'}
           size={80}
           color="#fff"
           onPress={togglePlaying}
